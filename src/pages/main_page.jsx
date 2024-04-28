@@ -7,15 +7,41 @@ import {
   TabList,
   TabIndicator,
   Heading,
+  Input,
 } from '@chakra-ui/react';
 import SideMenu from '../components/side_menu';
 import Chat from '../components/chat';
 import InputChat from '../components/input_chat';
 import useWindowDimensions from '../hooks/use_window_dimensions';
 import Histogram from '../components/histogram';
+import { useNavigate } from 'react-router';
+import { useEffect } from 'react';
+import { useStores } from '../store/store_context';
+import { useState } from 'react';
 
 const MainPage = () => {
+  const { GlobalVars } = useStores();
+
+  const navigate = useNavigate();
+  const [vebinarId, setVebinarId] = useState();
   const { width, height } = useWindowDimensions();
+  const [messagesList, updateMessagesList] = useState([
+    {
+      role: 'Neuro',
+      message:
+        'Привет, меня попросили узнать твое мнение о прошедшем мероприятии, расскажи о нем пожалуйста;)',
+    },
+  ]);
+  useEffect(() => {
+    if (GlobalVars.token == null) {
+      navigate('/');
+    }
+  }, [GlobalVars.token]);
+
+  useEffect(() => {
+    GlobalVars.getMe();
+  }, []);
+
   return (
     <VStack
       width={'100%'}
@@ -23,6 +49,7 @@ const MainPage = () => {
       backgroundColor={'black'}
       padding={width <= 1024 ? '1vh 5vw' : '5vh 20vw'}
     >
+      <Heading onClick={() => GlobalVars.updateToken(null)}> </Heading>
       <SideMenu />
       <VStack
         width={'100%'}
@@ -48,35 +75,27 @@ const MainPage = () => {
           />
           <TabPanels>
             <TabPanel>
-              <Chat
-                messages={[
-                  {
-                    role: 'Neuro',
-                    message:
-                      'Этот компонент принимает массив messages, каждый элемент которого содержит объект с двумя полями: role (роль отправителя) и message (текст сообщения). Затем он маппит каждое сообщение и отображает его в блоке, подписывая его ролью отправителя. Сообщения от администратора будут отображаться серым фоном, а сообщения от пользователя - синим фоном.',
-                  },
-                  {
-                    role: 'user',
-                    message:
-                      'вот смотри ээээээ допустим нейронка спрашивает мол она задает вопрос юзер спрашшивает ой че то погоди у меня мозги поплыли смотри да я часто начинаю с жтого диалог похуй чат бот задает пользователю вопрос допустим алмоапдоапловжалповжлаповап так щас где ты где ты леша где ты допустим был ли информативным хотя нет какая то хуйня проссто тут еще вопросы надо придумать для этой хуйни ллаллаплоадпвап леша блять я все вижу какая ты сука ',
-                  },
-                  {
-                    role: 'Neuro',
-                    message:
-                      'напиши компонент для отображения чата на react chakra ui в который будет передаваться массив обьектов а он будет их отображать и подписывать кому принадлежит сообщение',
-                  },
-                  {
-                    role: 'user',
-                    message:
-                      'сукаааааааааааа аыввахзывщаззывхывазывза',
-                  },
-                ]}
+              <Input
+                background={'black'}
+                padding={'5px 10px'}
+                border={'2px solid #FFAA00'}
+                color={'white'}
+                placeholder="id мероприятия"
+                marginTop={'20px'}
+                onChange={e => setVebinarId(e.target.value)}
               />
-              <InputChat />
+
+              <Chat messages={messagesList} />
+              <InputChat
+                updateMessagesList={updateMessagesList}
+                messagesList={messagesList}
+              />
             </TabPanel>
-            <TabPanel>
-              <Histogram />
-            </TabPanel>
+            {GlobalVars.is_admin ? (
+              <TabPanel>
+                <Histogram />
+              </TabPanel>
+            ) : null}
           </TabPanels>
         </Tabs>
       </VStack>

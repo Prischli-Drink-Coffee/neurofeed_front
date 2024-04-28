@@ -4,12 +4,34 @@ import { createHashRouter, RouterProvider } from 'react-router-dom';
 import MainPage from './pages/main_page';
 import { useCallback } from 'react';
 import Particles from 'react-tsparticles';
-import { loadSlim } from 'tsparticles-slim'; 
+import { loadSlim } from 'tsparticles-slim';
+import LoginPage from './pages/login_page';
+import RootStore from './store/root_store';
+import { RootStoreContext } from './store/store_context';
+import Contacts from './pages/contacts';
+import Faq from './pages/faq';
+import Suggest from './pages/suggestions';
 
 const router = createHashRouter([
   {
-    element: <MainPage />,
+    element: <LoginPage />,
     path: '/',
+  },
+  {
+    element: <MainPage />,
+    path: '/main_page',
+  },
+  {
+    element: <Contacts />,
+    path: '/contacts',
+  },
+  {
+    element: <Faq />,
+    path: '/faq',
+  },
+  {
+    element: <Suggest />,
+    path: '/suggest',
   },
 ]);
 
@@ -23,83 +45,85 @@ function App() {
     await console.log(container);
   }, []);
   return (
-    <ChakraBaseProvider>
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        loaded={particlesLoaded}
-        options={{
-          background: {
-            color: {
-              value: 'black',
-            },
-          },
-          fpsLimit: 120,
-          interactivity: {
-            events: {
-              onClick: {
-                enable: false,
-                mode: 'push',
-              },
-              onHover: {
-                enable: false,
-                mode: 'repulse',
-              },
-              resize: true,
-            },
-            modes: {
-              push: {
-                quantity: 4,
-              },
-              repulse: {
-                distance: 200,
-                duration: 0.4,
+    <RootStoreContext.Provider value={new RootStore()}>
+      <ChakraBaseProvider>
+        <Particles
+          id="tsparticles"
+          init={particlesInit}
+          loaded={particlesLoaded}
+          options={{
+            background: {
+              color: {
+                value: 'black',
               },
             },
-          },
-          particles: {
-            color: {
-              value: '#FFAA00',
-            },
-            links: {
-              color: '#ffffff',
-              distance: 150,
-              enable: true,
-              opacity: 0.5,
-              width: 1,
-            },
-            move: {
-              direction: 'none',
-              enable: true,
-              outModes: {
-                default: 'bounce',
+            fpsLimit: 120,
+            interactivity: {
+              events: {
+                onClick: {
+                  enable: false,
+                  mode: 'push',
+                },
+                onHover: {
+                  enable: true,
+                  mode: 'repulse',
+                },
+                resize: true,
               },
-              random: false,
-              speed: 1,
-              straight: false,
+              modes: {
+                push: {
+                  quantity: 4,
+                },
+                repulse: {
+                  distance: 200,
+                  duration: 0.4,
+                },
+              },
             },
-            number: {
-              density: {
+            particles: {
+              color: {
+                value: '#FFAA00',
+              },
+              links: {
+                color: '#ffffff',
+                distance: 150,
                 enable: true,
-                area: 800,
+                opacity: 0.5,
+                width: 1,
               },
-              value: 40,
+              move: {
+                direction: 'none',
+                enable: true,
+                outModes: {
+                  default: 'bounce',
+                },
+                random: false,
+                speed: 1,
+                straight: false,
+              },
+              number: {
+                density: {
+                  enable: true,
+                  area: 800,
+                },
+                value: 40,
+              },
+              opacity: {
+                value: 0.5,
+              },
+              shape: {
+                type: 'circle',
+              },
+              size: {
+                value: { min: 1, max: 5 },
+              },
             },
-            opacity: {
-              value: 0.5,
-            },
-            shape: {
-              type: 'circle',
-            },
-            size: {
-              value: { min: 1, max: 5 },
-            },
-          },
-          detectRetina: true,
-        }}
-      />
-      <RouterProvider router={router} />
-    </ChakraBaseProvider>
+            detectRetina: true,
+          }}
+        />
+        <RouterProvider router={router} />
+      </ChakraBaseProvider>
+    </RootStoreContext.Provider>
   );
 }
 
