@@ -31,7 +31,7 @@ const LoginForm = () => {
     validationSchema,
     onSubmit: values => {
       console.log(JSON.stringify(values));
-      GlobalVars.getToken(values);
+      GlobalVars.updateToken('asdalksdaskldlja;sdkjfasdjfk;asdjfl;askdf;jasldfjsadf');
     },
   });
   useEffect(() => {
